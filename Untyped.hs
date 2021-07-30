@@ -4,12 +4,12 @@ import Control.Applicative
 import HareMonad (Hare, hare, failure, readCharacter)
 import Control.Monad(guard)
 
-data RE = Empty 
-        | Fail
-        | Char [Char]
-        | Seq  RE RE 
-        | Choose RE RE 
-        | Star RE 
+data RE = Empty -- Matches the empty string
+        | Fail -- Matches no strings
+        | Char [Char] -- Matches a single character from the list
+        | Seq RE RE -- Matches the two expressions in sequence
+        | Choose RE RE -- Matches either the first, or the second
+        | Star RE -- Matches the expression zero or more times
 
 data Results = None
              | Character Char 
