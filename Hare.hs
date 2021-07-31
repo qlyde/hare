@@ -31,9 +31,10 @@ matchAnywhere re = match re <|> (readCharacter >> matchAnywhere re)
 (=~) :: (Alternative f, Monad f) => String -> RE a -> f a 
 (=~) = flip (hare . matchAnywhere)
 
-infixr `cons`  
+infixr `cons`
 cons :: RE a -> RE [a] -> RE [a]
-cons x xs = error "'cons' unimplemented"
+cons x xs = Action (uncurry (:)) $ Seq x xs -- type of `Seq x xs` is `RE (a, [a])`
+                                            -- Action function must have type `(a, [a]) -> [a]`
 
 string :: String -> RE String
 string xs = error "'string' unimplemented"
