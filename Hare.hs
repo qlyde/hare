@@ -49,7 +49,7 @@ option :: RE a -> RE (Maybe a)
 option re = error "'option' unimplemented"
 
 plus :: RE a -> RE [a]
-plus re = error "'plus' unimplemented"
+plus re = cons re $ Star re
 
 choose :: [RE a] -> RE a
 choose res = error "'choose' unimplemented"
