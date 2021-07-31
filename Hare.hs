@@ -7,14 +7,23 @@ import HareMonad
 data RE :: * -> * where 
   Empty :: RE ()
   Fail :: RE a
-  -- Char 
-  -- Seq
-  -- Choose
-  -- Star
+  Char :: [Char] -> RE Char
+  Seq :: RE a -> RE b -> RE (a, b)
+  Choose :: RE a -> RE a -> RE a -- ??
+  Star :: RE a -> RE [a] -- ??
   Action :: (a -> b) -> RE a -> RE b
-match :: (Alternative f, Monad f) => RE a -> Hare f a
-match re = error "'match' unimplemented"
 
+match :: (Alternative f, Monad f) => RE a -> Hare f a
+match Empty          = pure ()
+match Fail           = failure
+match (Char cs)      = do
+  c <- readCharacter
+  guard (c `elem` cs)
+  pure c
+match (Seq    ra rb) = (,) <$> match ra <*> match rb
+match (Choose ra rb) = match ra <|> match rb
+match (Star   ra)    = ((:) <$> match ra <*> match (Star ra)) <|> pure []
+match (Action f  ra) = f <$> match ra
 
 matchAnywhere :: (Alternative f, Monad f) => RE a -> Hare f a
 matchAnywhere re = match re <|> (readCharacter >> matchAnywhere re)
