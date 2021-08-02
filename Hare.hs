@@ -9,8 +9,8 @@ data RE :: * -> * where
   Fail :: RE a
   Char :: [Char] -> RE Char
   Seq :: RE a -> RE b -> RE (a, b)
-  Choose :: RE a -> RE a -> RE a -- ??
-  Star :: RE a -> RE [a] -- ??
+  Choose :: RE a -> RE a -> RE a
+  Star :: RE a -> RE [a]
   Action :: (a -> b) -> RE a -> RE b
 
 match :: (Alternative f, Monad f) => RE a -> Hare f a
@@ -36,9 +36,8 @@ cons :: RE a -> RE [a] -> RE [a]
 cons x xs = Action (\(a, as) -> a : as) $ Seq x xs -- type of `Seq x xs` is `RE (a, [a])`
                                                    -- Action function must have type `(a, [a]) -> [a]`
 
--- Char, cons, Empty, Action
 string :: String -> RE String
-string xs = error "'string' unimplemented"
+string xs = cons 
 
 rpt :: Int -> RE a -> RE [a]
 rpt n re = error "'rpt' unimplemented"
@@ -49,11 +48,8 @@ rptRange (x,y) re = error "'rptRange' unimplemented"
 option :: RE a -> RE (Maybe a)
 option re = error "'option' unimplemented"
 
--- Action, Seq, Star
 plus :: RE a -> RE [a]
-plus re = Action (\(a, as) -> a : as) $ Seq re $ Star re -- type of `Seq re $ Star re` is `RE (a, [a])`
-                                                         -- Action function must have type `(a, [a]) -> [a]`
--- plus re = cons re $ Star re
+plus re = cons re $ Star re
 
 choose :: [RE a] -> RE a
 choose res = error "'choose' unimplemented"
