@@ -51,7 +51,7 @@ rpt n re
   | n <= 0    = Action (\_ -> []) Empty
   | otherwise = cons re $ rpt (n - 1) re
 
--- Lastly, the rptRange function takes a range of numbers (x, y). You may assume that
+-- The rptRange function takes a range of numbers (x, y). You may assume that
 -- x <= y. It will match the given regex at least x times and at most y times.
 rptRange :: (Int, Int) -> RE a -> RE [a]
 rptRange (x, y) re
